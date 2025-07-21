@@ -1,0 +1,19 @@
+{
+    "123": [
+        {
+            "timestamp": "2025-07-21T11:13:47.600229",
+            "employee_code": "123",
+            "employee_name": "Diyorbek Farhodov",
+            "employee_phone": "+998948670779",
+            "house_data": {
+                "district": "Xatirchi",
+                "mahalla": "dawf",
+                "street": "A\nA",
+                "qishloq": "\\A",
+                "home_number": "A",
+                "owner_name": "A",
+                "owner_phone": "A"
+            }
+        }
+    ]
+}
