@@ -1,5 +1,5 @@
 
-from json_handler import add_user_data
+from json_handler import add_user_data, search_by_owner_phone
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
@@ -107,3 +107,51 @@ async def process_owner_phone(message: Message, state: FSMContext):
     await message.answer("✅ Ma'lumotlaringiz saqlandi.")
     await state.clear()
 
+# _________________________________________________________________________________________________________________
+# Uy qidiruvi uchun
+
+
+@router.callback_query(F.data == 'search_house')
+async def start_phone_search(callback: CallbackQuery, state: FSMContext):
+    await callback.message.edit_text(
+        " Uy egasining telefon raqamini kiriting (+998XXXXXXXXX formatida):"
+    )
+    await state.set_state(HouseInfoState.waiting_for_search_owner_phone)
+
+
+@router.message(HouseInfoState.waiting_for_search_owner_phone)
+async def process_phone_search(message: Message, state: FSMContext):
+    phone = message.text.strip()
+
+    if not (phone.startswith('+998') and len(phone) == 13 and phone[1:].isdigit()):
+        await message.answer("❌ Noto'g'ri format. Iltimos, +998XXXXXXXXX ko'rinishida kiriting")
+        return
+
+    results = search_by_owner_phone(phone)
+    await show_search_results(message, results, state)
+
+
+async def show_search_results(message: Message, results: list[dict], state: FSMContext):
+    if not results:
+        await message.answer("❌ Hech qanday natija topilmadi")
+    else:
+        for result in results:
+            employee_name = result.get("employee_name", "Nomaʼlum xodim")
+            house_data = result.get("house_data", {})
+
+            response = (
+                "🔍 <b>Qidiruv natijasi:</b>\n\n"
+                f" <b>Xodim:</b> {employee_name}\n"
+                f" <b>Tuman:</b> {house_data.get('district', 'Nomaʼlum')}\n"
+                f" <b>Mahalla:</b> {house_data.get('mahalla', 'Nomaʼlum')}\n"
+                f" <b>Ko'cha:</b> {house_data.get('street', 'Nomaʼlum')}\n"
+                f" <b>Qishloq:</b> {house_data.get('qishloq', 'Nomaʼlum')}\n"
+                f" <b>Uy raqami:</b> {house_data.get('home_number', 'Nomaʼlum')}\n"
+                f" <b>Uy egasi:</b> {house_data.get('owner_name', 'Nomaʼlum')}\n"
+                f"ire"
+                f" <b>Telefon:</b> {house_data.get('owner_phone', 'Nomaʼlum')}"
+            )
+
+            await message.answer(response, parse_mode="HTML")
+
+    await state.clear()

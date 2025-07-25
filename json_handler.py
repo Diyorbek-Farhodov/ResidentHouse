@@ -50,6 +50,18 @@ def add_user_data(employee_code: str, employee_name: str, employee_phone: str, n
         print(f"Ma'lumot qo'shishda xatolik: {e}")
         return False
 
+def search_by_owner_phone(phone: str) -> list[dict]:
+    data = load_data()
+    results = []
+
+    for employee_code, records in data.items():
+        for record in records:
+            house_data = record.get("house_data", {})
+            if phone in house_data.get("owner_phone", ""):
+                results.append(record)
+    return results
+
+
 def clear_data():
     try:
         with open(DATA_FILE, "w", encoding='utf-8') as f:

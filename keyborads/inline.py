@@ -11,12 +11,14 @@ def auth_kb():
     ])
 
 def main_menu_kb():
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=" Yangi Uy", callback_data="add_house")],
-        [InlineKeyboardButton(text=" Mening tumanlarim", callback_data="my_districts")],
-        [InlineKeyboardButton(text=" Yashovchi qo‘shish", callback_data="add_resident")],
-        [InlineKeyboardButton(text=" Uy qidiruvi", callback_data="search_house")]
-    ])
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=" Yangi Uy", callback_data="add_house")],
+            [InlineKeyboardButton(text=" Mening tumanlarim", callback_data="my_districts")],
+            [InlineKeyboardButton(text=" Yashovchi qo‘shish", callback_data="add_resident")],
+            [InlineKeyboardButton(text=" Uy qidiruvi", callback_data="search_house")]
+        ]
+    )
 
 
 def region_keyboard():
